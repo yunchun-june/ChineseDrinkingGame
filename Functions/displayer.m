@@ -95,7 +95,7 @@ classdef displayer < handle
             WaitSecs(time);
         end
 
-        function decideScreen(obj,state,myRes,data,timer,confirmed)
+        function decideScreen(obj,state,choice,guess,timer,confirmed)
             if ~obj.displayerOn return; end
             
             %--------------------------------------
@@ -121,16 +121,16 @@ classdef displayer < handle
             if(strcmp(state,'choose'))
                 obj.drawTimer(timer,1,1);
                 if(~confirmed)
-                    if(myRes.choice ~= 0) obj.write(num2str(myRes.choice),1,myRes.choice+3,'yellow',30); end
+                    if(choice ~= 0) obj.write(num2str(choice),1,choice+3,'yellow',30); end
                 end
                 
                 if(confirmed)
-                    if(myRes.choice ~= 0) obj.write(num2str(myRes.choice),1,myRes.choice+3,'red',30); end
+                    if(choice ~= 0) obj.write(num2str(choice),1,choice+3,'red',30); end
                 end            
             end
             
-            if(strcmp(state,'guessSum') || strcmp(state,'showResult'))
-                if(myRes.choice ~= 0) obj.write(num2str(myRes.choice),1,myRes.choice+3,'red',30); end          
+            if(strcmp(state,'guessSum'))
+                if(choice ~= 0) obj.write(num2str(choice),1,choice+3,'red',30); end          
             end
             
             %1 Guess Sum
@@ -144,22 +144,12 @@ classdef displayer < handle
                 obj.write('5',2,8,'white',30);
                 obj.write('6',2,9,'white',30);
                 if(confirmed)
-                    if(myRes.guess ~= 0) obj.write(num2str(myRes.guess),2,myRes.guess+3,'red',30); end
+                    if(guess ~= 0) obj.write(num2str(guess),2,guess+3,'red',30); end
                 end
                 
                 if(~confirmed)
-                    if(myRes.guess ~= 0) obj.write(num2str(myRes.guess),2,myRes.guess+3,'yellow',30); end
+                    if(guess ~= 0) obj.write(num2str(guess),2,guess+3,'yellow',30); end
                 end
-            end
-
-            
-            if(strcmp(state,'showResult'))
-                obj.write('2',2,5,'white',30);
-                obj.write('3',2,6,'white',30);
-                obj.write('4',2,7,'white',30);
-                obj.write('5',2,8,'white',30);
-                obj.write('6',2,9,'white',30);
-                if(myRes.guess ~= 0) obj.write(num2str(myRes.guess),2,myRes.guess+3,'red',30); end
             end
             
             %Real Sum, Opp guess, Opp choice
@@ -174,42 +164,83 @@ classdef displayer < handle
             obj.write('Opp',5,2,'white',30);
             obj.write('Choice',5,3,'white',30);
             
-            if(strcmp(state,'showResult'))
-                %real sum
-                obj.write('2',3,5,'white',30);
-                obj.write('3',3,6,'white',30);
-                obj.write('4',3,7,'white',30);
-                obj.write('5',3,8,'white',30);
-                obj.write('6',3,9,'white',30);
-                
-                %opp Guess
-                obj.write('2',4,5,'white',30);
-                obj.write('3',4,6,'white',30);
-                obj.write('4',4,7,'white',30);
-                obj.write('5',4,8,'white',30);
-                obj.write('6',4,9,'white',30);
-                
-                %opp Choice
-                obj.write('1',5,4,'white',30);
-                obj.write('2',5,5,'white',30);
-                obj.write('3',5,6,'white',30);
-                
-                if(data.realSum ~= 0) obj.write(num2str(data.realSum),3,data.realSum+3,'red',30); end
-                if(data.oppGuess ~= 0) obj.write(num2str(data.oppGuess),4,data.oppGuess+3,'red',30); end
-                if(data.oppChoice ~= 0) obj.write(num2str(data.oppChoice),5,data.oppChoice+3,'red',30); end
-                
-                %your Score
-                obj.write('Your Score:',1,10,'white',30);
-                obj.write(num2str(data.yourScore),2,10,'white',30);
-                obj.write('Opp Score:',4,10,'white',30);
-                obj.write(num2str(data.oppScore),5,10,'white',30);
-                
-                if(strcmp(data.winner,'WIN')) obj.write('WIN',3,10,'red',30); end
-                if(strcmp(data.winner,'LOSE')) obj.write('LOSE',3,10,'green',30); end
-                if(strcmp(data.winner,'DRAW')) obj.write('DRAW',3,10,'white',30); end
-                
-            end
+            Screen('Flip',obj.wPtr);
+        end
+        
+        
+        function showResult(obj,data)
+            if ~obj.displayerOn return; end
             
+            %--------------------------------------
+            %1  timer here?
+            %2  Your    Guess   Real 
+            %3  Choice  Sum     Sum
+            %4  1               
+            %5  2       2       2
+            %6  3       3       3
+            %7          4       4
+            %8          5       5
+            %9          6       6
+            %10 Your Score:   
+            %--------------------------------------
+            
+            
+            %1 Your Choice
+            obj.write('Your',1,2,'white',30);
+            obj.write('Choice',1,3,'white',30);
+            obj.write('1',1,4,'white',30);
+            obj.write('2',1,5,'white',30);
+            obj.write('3',1,6,'white',30);
+            if(data.yourChoice ~= 0) obj.write(num2str(data.yourChoice),1,data.yourChoice+3,'red',30); end          
+            
+            %1 Guess Sum
+            obj.write('Guess',2,2,'white',30);
+            obj.write('Sum',2,3,'white',30);
+            obj.write('2',2,5,'white',30);
+            obj.write('3',2,6,'white',30);
+            obj.write('4',2,7,'white',30);
+            obj.write('5',2,8,'white',30);
+            obj.write('6',2,9,'white',30);
+            if(data.yourGuess ~= 0) obj.write(num2str(data.yourGuess),2,data.yourGuess+3,'red',30); end
+            
+            %Real Sum, Opp guess, Opp choice
+            obj.write('Real',3,2,'white',30);
+            obj.write('Sum',3,3,'white',30);
+            obj.write('2',3,5,'white',30);
+            obj.write('3',3,6,'white',30);
+            obj.write('4',3,7,'white',30);
+            obj.write('5',3,8,'white',30);
+            obj.write('6',3,9,'white',30);
+            
+            %Opp guess sum
+            obj.write('Opp',4,2,'white',30);
+            obj.write('Guess',4,3,'white',30);
+            obj.write('2',4,5,'white',30);
+            obj.write('3',4,6,'white',30);
+            obj.write('4',4,7,'white',30);
+            obj.write('5',4,8,'white',30);
+            obj.write('6',4,9,'white',30);
+            
+            %Opp choice
+            obj.write('Opp',5,2,'white',30);
+            obj.write('Choice',5,3,'white',30);
+            obj.write('1',5,4,'white',30);
+            obj.write('2',5,5,'white',30);
+            obj.write('3',5,6,'white',30);
+            
+            if(data.realSum ~= 0) obj.write(num2str(data.realSum),3,data.realSum+3,'red',30); end
+            if(data.oppGuess ~= 0) obj.write(num2str(data.oppGuess),4,data.oppGuess+3,'red',30); end
+            if(data.oppChoice ~= 0) obj.write(num2str(data.oppChoice),5,data.oppChoice+3,'red',30); end
+
+            %your Score
+            obj.write('Your Score:',1,10,'white',30);
+            obj.write(num2str(data.yourScore),2,10,'white',30);
+            obj.write('Opp Score:',4,10,'white',30);
+            obj.write(num2str(data.oppScore),5,10,'white',30);
+
+            if(strcmp(data.winner,'WIN')) obj.write('WIN',3,10,'red',30); end
+            if(strcmp(data.winner,'LOSE')) obj.write('LOSE',3,10,'green',30); end
+            if(strcmp(data.winner,'DRAW')) obj.write('DRAW',3,10,'white',30); end
             
 %                 data.yourChoice = obj.result{trial,2};
 %                 data.yourGuess  = obj.result{trial,3};
@@ -222,6 +253,7 @@ classdef displayer < handle
             
             Screen('Flip',obj.wPtr);
         end
+        
         
         function write(obj,text,x,y,c,size)
             if strcmp(c,'white') color = obj.WHITE; end
@@ -246,29 +278,7 @@ classdef displayer < handle
             end
 
         end
-        
-        function showResult(obj,result)
-            obj.write('[ Fianl Result ]',38,3,'white',30);
-            
-            obj.write('Your Cash',30,4,'white',30);
-            obj.write(num2str(result.myCash),50,4,'white',30);
-            obj.write('Opponent Cash',30,5,'white',30);
-            obj.write(num2str(result.oppCash),50,5,'white',30);
-            
-            if (result.myCash > result.oppCash)
-                obj.write('YOU WIN',40,6,'red',30);
-                fprintf('[RESULT] you win\n');
-            end
-            if (result.myCash == result.oppCash)
-                obj.write('DRAW ',40,6,'white',30);
-                fprintf('[RESULT] draw\n');
-            end
-            if (result.myCash < result.oppCash)
-                obj.write('YOU LOSE',40,6,'green',30);
-                fprintf('[RESULT] you lose\n');
-            end
-            Screen('Flip',obj.wPtr);
-        end
+
         
     end
     

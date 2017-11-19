@@ -121,17 +121,15 @@ try
         end
         
         startTime = GetSecs();
-        resultData = data.getResult(trial);
         decisionMade = FALSE;
         if strcmp(rule,'player2') decisionMade = TRUE; end
-        displayer.decideScreen('choose',myRes,resultData,0,0);
         fprintf('Make your choice.\n');
         for elapse = 1:choiceTime
             remaining = choiceTime-elapse+1;
             endOfThisSecond = startTime+elapse;
             fprintf('remaining time: %d\n',remaining);
 
-            displayer.decideScreen('choose',myRes,resultData,remaining,decisionMade);
+            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
             
             while(GetSecs()<endOfThisSecond)
                 if ~decisionMade
@@ -142,7 +140,7 @@ try
                        if(strcmp(keyName,'confirm') && myRes.choice ~= 0)
                             decisionMade = TRUE;
                             fprintf('decision confirmed : %d\n',myRes.choice);
-                            displayer.decideScreen('choose',myRes,resultData,remaining,1);
+                            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
                        end
                        
                        if strcmp(keyName,'quitkey')
@@ -157,7 +155,7 @@ try
                           if keyName >= 1 && keyName <=3
                             myRes.choice = keyName;
                             fprintf('choose %d\n',str2num(keyName));
-                            displayer.decideScreen('choose',myRes,resultData,remaining,0);
+                            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
                        end
@@ -175,12 +173,11 @@ try
         startTime = GetSecs();
         decisionMade = FALSE;
         if strcmp(rule,'player2') decisionMade = TRUE; end
-        displayer.decideScreen('guessSum',myRes,resultData,0,0);
         fprintf('Guess total Sum.\n');
         for elapse = 1:guessSumTime
             endOfThisSecond = startTime+elapse;
             remaining = guessSumTime-elapse+1;
-            displayer.decideScreen('guessSum',myRes,resultData,remaining,decisionMade);
+            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
             
             fprintf('remaining time: %d\n',remaining);
             while(GetSecs()<endOfThisSecond)
@@ -189,13 +186,11 @@ try
                    if(strcmp(keyName,'na'))
                        continue;
                    else
-                       myRes.events{end+1,1} = keyName;
-                       myRes.events{end,2} = num2str(timing-startTime);
-                       
+
                        if(strcmp(keyName,'confirm') && myRes.guess ~= 0)
                             decisionMade = TRUE;
                             fprintf('decision confirmed : %d\n',myRes.guess);
-                            displayer.decideScreen('guessSum',myRes,resultData,remaining,1);
+                            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
                        end
                        
                        if strcmp(keyName,'quitkey')
@@ -210,16 +205,19 @@ try
                           if keyName >= 2 && keyName <=6
                             myRes.guess = keyName;
                             fprintf('%d.\n',str2num(keyName));
-                            displayer.decideScreen('guessSum',myRes,resultData,remaining,0);
+                            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
                        end
+                       
+                       myRes.events{end+1,1} = keyName;
+                       myRes.events{end,2} = num2str(timing-startTime);
                    end 
                    
                 end
             end
         end
-        displayer.decideScreen('guessSum',myRes,resultData,0,1);
+        displayer.decideScreen('guessSum',myRes.choice,myRes.guess,0,1);
         if(~decisionMade) myRes.guess = 0; end
   
         %========== Exchange and Save Data ===============%
@@ -232,7 +230,7 @@ try
         resultData = data.getResult(trial);
         data.logStatus(trial);
         
-        displayer.decideScreen('showResult',myRes,resultData,5,1);
+        displayer.showResult(resultData);
         WaitSecs(5);
         displayer.blackScreen();
     end
