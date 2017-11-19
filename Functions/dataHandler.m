@@ -100,15 +100,18 @@ classdef dataHandler <handle
             end
             
             %real sum
-            obj.result{trial,6} = obj.result{trial,2} + obj.result{trial,4};
-            
+            if(obj.result{trial,2} ~= 0 && obj.result{trial,4} ~= 0)
+                obj.result{trial,6} = obj.result{trial,2} + obj.result{trial,4};
+            else
+                obj.result{trial,6} = 0;
+            end
             
             WRONG   = 1;
             RIGHT   = 2;
             NONSENSE = 3;
             
             %p1 is right
-            if(~obj.resMakeSense(obj.result{trial,obj.p1choice}, obj.result{trial,obj.p1guess}))
+            if(~obj.resMakeSense(obj.result{trial,obj.p1choice}, obj.result{trial,obj.p1guess}) || obj.result{trial,obj.p1guess} == 0)
                 obj.result{trial,obj.p1IsRight} = NONSENSE;
             elseif(obj.result{trial,obj.realSum} == obj.result{trial,obj.p1guess})
                 obj.result{trial,obj.p1IsRight} = RIGHT;
@@ -117,7 +120,7 @@ classdef dataHandler <handle
             end
             
             %p2 is right
-            if(~obj.resMakeSense(obj.result{trial,obj.p2choice}, obj.result{trial,obj.p2guess}))
+            if(~obj.resMakeSense(obj.result{trial,obj.p2choice}, obj.result{trial,obj.p2guess}) || obj.result{trial,obj.p2guess} == 0)
                 obj.result{trial,obj.p2IsRight} = NONSENSE;
             elseif(obj.result{trial,obj.realSum} == obj.result{trial,obj.p2guess})
                 obj.result{trial,obj.p2IsRight} = RIGHT;
@@ -126,7 +129,6 @@ classdef dataHandler <handle
             end
             
             % set winner
-            
                                 %x  %o  %? player2
             GET_WINNER    = [   0   2   1; %x player1
                                 1   0   1; %o
@@ -161,9 +163,12 @@ classdef dataHandler <handle
                 data.oppChoice  = obj.result{trial,4};
                 data.oppGuess   = obj.result{trial,5};
                 data.realSum    = obj.result{trial,6};
-                data.winner     = obj.result{trial,9};
                 data.yourScore  = obj.result{trial,10};
                 data.oppScore   = obj.result{trial,11};
+                
+                if(obj.result{trial,9} == 1) data.winner = 'WIN'; end
+                if(obj.result{trial,9} == 2) data.winner = 'LOSE'; end
+                if(obj.result{trial,9} == 0) data.winner = 'DRAW'; end
             end
             
             if strcmp(obj.rule , 'player2')
@@ -175,6 +180,10 @@ classdef dataHandler <handle
                 data.winner     = obj.result{trial,9};
                 data.yourScore  = obj.result{trial,11};
                 data.oppScore   = obj.result{trial,10};
+                
+                if(obj.result{trial,9} == 2) data.winner = 'WIN'; end
+                if(obj.result{trial,9} == 1) data.winner = 'LOSE'; end
+                if(obj.result{trial,9} == 0) data.winner = 'DRAW'; end
             end
         end
         
