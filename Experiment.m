@@ -14,12 +14,9 @@ try
     guessSumTime        = 5;
     showResultTime      = 3;
     fixationTime        = 1;
-    pointPerWin         = 10;
+    scorePerWin         = 10;
     
     %===== Constants =====%
-    MARKET_BASELINE     = 1;
-    MARKET_BUBBLE       = 2;
-    MARKET_BURST        = 3;
     TRUE                = 1;
     FALSE               = 0;
     
@@ -59,7 +56,8 @@ try
 
     fprintf('---Starting Experiment---\n');
     inputDeviceName     = 'Mac';
-    displayerOn         = FALSE;
+    if(strcmp(rule,'player1')) displayerOn = TRUE;
+    else displayerOn = FALSE;end
     screenID            = 0;
     
     %===== Initialize Componets =====%
@@ -70,11 +68,11 @@ try
     %===== Establish Connection =====% 
     cnt = connector(rule,myID, oppID,myIP,myPort,oppIP,oppPort);
     cnt.establish(myID,oppID);
-    %ListenChar(2);
-    %HideCursor();
+    ListenChar(2);
+    HideCursor();
     
     %===== Open Screen =====% 
-    %fprintf('Start after 10 seconds\n');
+    fprintf('Start after 10 seconds\n');
     %WaitSecs(10);
     displayer.openScreen();
     
@@ -91,7 +89,7 @@ try
     %displayer.blackScreen();
     
     %reinitialized components
-    data        = dataHandler(myID,oppID,rule,totalTrials,pointPerWin);
+    data        = dataHandler(myID,oppID,rule,totalTrials,scorePerWin);
     
     for trial = 1:totalTrials
 
@@ -115,17 +113,104 @@ try
         %=========== Fixation ==============%
         displayer.fixation(fixationTime);
        
-        %========== Make Decision ===============%
+        %========== Make Choice ===============%
     
-        %get choice 1-3
-        myRes.choice = input('Your choice (1-3): ','s');
-        myRes.choice = str2num(myRes.choice);
-        assert(myRes.choice >= 1 && myRes.choice <= 3);
-        %get guess 2-6
-        myRes.guess = input('Your choice (2-6): ','s');
-        myRes.guess = str2num(myRes.guess);
-        assert(myRes.guess >= 2 && myRes.guess <= 6);
+        if strcmp(rule,'player2')
+            myRes.choice = randi(3);
+            myRes.guess = myRes.choice + randi(3);
+        end
         
+        startTime = GetSecs();
+        decisionMade = FALSE;
+        if strcmp(rule,'player2') decisionMade = TRUE; end
+        fprintf('Make your choice.\n');
+        for elapse = 1:choiceTime
+            endOfThisSecond = startTime+elapse;
+            fprintf('remaining time: %d\n',choiceTime-elapse+1)
+            while(GetSecs()<endOfThisSecond)
+                
+                if decisionMade
+                    
+                else
+                   [keyName,timing] = keyboard.getResponse(endOfThisSecond);
+                   if(strcmp(keyName,'na'))
+                       continue;
+                   else
+                       myRes.events{end+1,1} = keyName;
+                       myRes.events{end,2} = num2str(timing-startTime);
+                       
+                       if(strcmp(keyName,'confirm') && myRes.choice ~= 0)
+                            decisionMade = TRUE;
+                            fprintf('decision confirmed : %d\n',myRes.choice);
+                       end
+                       
+                       if strcmp(keyName,'quitkey')
+                            displayer.closeScreen();
+                            ListenChar();
+                            fprintf('---- MANUALLY STOPPED ----\n');
+                            return;
+                       end
+                       
+                       try
+                          keyName = str2num(keyName);
+                          if keyName >= 1 && keyName <=3
+                            myRes.choice = keyName;
+                            fprintf('%d.\n',str2num(keyName));
+                          end 
+                       catch
+                       end
+                       
+                   end              
+                end
+            end
+        end
+        if(~decisionMade) myRes.choice = 0; end
+        
+        %========== Guess Sum ===============%
+        startTime = GetSecs();
+        decisionMade = FALSE;
+        if strcmp(rule,'player2') decisionMade = TRUE; end
+        fprintf('Guess total Sum.\n');
+        for elapse = 1:guessSumTime
+            endOfThisSecond = startTime+elapse;
+            fprintf('remaining time: %d\n',guessSumTime-elapse+1)
+            while(GetSecs()<endOfThisSecond)
+                if decisionMade
+                    
+                else
+                   [keyName,timing] = keyboard.getResponse(endOfThisSecond);
+                   if(strcmp(keyName,'na'))
+                       continue;
+                   else
+                       myRes.events{end+1,1} = keyName;
+                       myRes.events{end,2} = num2str(timing-startTime);
+                       
+                       if(strcmp(keyName,'confirm') && myRes.guess ~= 0)
+                            decisionMade = TRUE;
+                            fprintf('decision confirmed : %d\n',myRes.guess);
+                       end
+                       
+                       if strcmp(keyName,'quitkey')
+                            displayer.closeScreen();
+                            ListenChar();
+                            fprintf('---- MANUALLY STOPPED ----\n');
+                            return;
+                       end
+                       
+                       try
+                          keyName = str2num(keyName);
+                          if keyName >= 2 && keyName <=6
+                            myRes.guess = keyName;
+                            fprintf('%d.\n',str2num(keyName));
+                          end 
+                       catch
+                       end
+                   end              
+                end
+            end
+        end
+        if(~decisionMade) myRes.guess = 0; end
+  
         %========== Exchange and Save Data ===============%
         %Get opponent's response
         oppResRaw = cnt.sendOwnResAndgetOppRes(parser.resToStr(myRes));

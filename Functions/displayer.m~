@@ -22,7 +22,7 @@ classdef displayer < handle
         RED = [255 0 0];
         GREY = [100 100 100];
         DIMYELLOW = [100 100 0];
-        yLine = [23 29 35 41 47 53 59 65 71 77];
+        yLine = [23 29 35 41 47 53 59 65 71 77]; %10 lines
     end
     
     methods
@@ -76,7 +76,7 @@ classdef displayer < handle
             
             %delay
             Screen('Flip',obj.wPtr);
-            WaitSecs(.5);
+            WaitSecs(1);
             
             %fixation square
             Screen('FillRect', obj.wPtr, obj.WHITE, [obj.xCen-l,obj.yCen-l,obj.xCen+l,obj.yCen+l]);
@@ -85,7 +85,7 @@ classdef displayer < handle
             
             %delay
             Screen('Flip',obj.wPtr);
-            WaitSecs(.5);
+            WaitSecs(1);
         end
         
         function delay(obj,time)
