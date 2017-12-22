@@ -12,7 +12,7 @@ try
     
     choiceTime          = 5;
     guessSumTime        = 5;
-    showResultTime      = 3;
+    showResultTime      = 10;
     fixationTime        = 1;
     scorePerWin         = 10;
     
@@ -231,7 +231,7 @@ try
         data.logStatus(trial);
         
         displayer.showResult(resultData);
-        WaitSecs(5);
+        WaitSecs(showResultTime);
         displayer.blackScreen();
     end
 
