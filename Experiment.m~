@@ -136,7 +136,6 @@ try
                    if(strcmp(keyName,'na'))
                        continue;
                    else
-                       
                        if(strcmp(keyName,'confirm') && myRes.choice ~= 0)
                             decisionMade = TRUE;
                             fprintf('decision confirmed : %d\n',myRes.choice);
@@ -154,7 +153,7 @@ try
                           keyName = str2num(keyName);
                           if keyName >= 1 && keyName <=3
                             myRes.choice = keyName;
-                            fprintf('choose %d\n',keyName);
+                            fprintf('choose %d\n',str2num(keyName));
                             displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
@@ -204,7 +203,7 @@ try
                           keyName = str2num(keyName);
                           if keyName >= 2 && keyName <=6
                             myRes.guess = keyName;
-                            fprintf('choose %d\n',keyName);
+                            fprintf('%d.\n',str2num(keyName));
                             displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
