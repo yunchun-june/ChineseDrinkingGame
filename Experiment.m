@@ -7,7 +7,7 @@ Screen('Preference', 'SkipSyncTests', 1);
 try
     %===== Parameters =====%
 
-    totalTrials         = 3;
+    totalTrials         = 20;
     practiceTrials      = 15;
     
     choiceTime          = 5;
@@ -56,7 +56,7 @@ try
 
     fprintf('---Starting Experiment---\n');
     inputDeviceName     = 'Mac';
-    if(strcmp(rule,'player1')) displayerOn = FALSE;
+    if(strcmp(rule,'player1')) displayerOn = TRUE;
     else displayerOn = FALSE;end
     screenID            = 0;
     
