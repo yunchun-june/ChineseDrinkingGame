@@ -234,7 +234,9 @@ try
         WaitSecs(showResultTime);
         displayer.blackScreen();
     end
-
+    
+    
+    
     displayer.closeScreen();
     ListenChar();
     data.saveToFile();
