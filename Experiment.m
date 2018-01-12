@@ -2,7 +2,7 @@
 clear all;
 close all;
 clc;
-addpath('./Functions');
+addpath('./CDG_Functions');
 Screen('Preference', 'SkipSyncTests', 1);
 
 try
@@ -66,9 +66,9 @@ try
     screenID            = 0;
     
     %===== Initialize Componets =====%
-    keyboard    = keyboardHandler(inputDeviceName);
+    keyboard    = CDG_keyboardHandler();
     displayer   = displayer(max(Screen('Screens')),displayerOn);
-    parser      = parser();
+    parser      = CDG_parser();
     
     %===== Establish Connection =====% 
     cnt = connector(rule,myID, oppID,myIP,myPort,oppIP,oppPort);
@@ -88,12 +88,7 @@ try
 
     %===== Start of real experiment =====%
     
-    %displayer.writeMessage('This is the real experiment','Press space to start');
-    %keyboard.waitSpacePress();
-    %displayer.blackScreen();
-    
-    %reinitialized components
-    data        = dataHandler(myID,oppID,rule,totalTrials,scorePerWin);
+    data        = CDG_dataHandler(myID,oppID,rule,totalTrials,scorePerWin);
     
     for trial = 1:totalTrials
 

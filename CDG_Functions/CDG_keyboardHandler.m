@@ -1,4 +1,4 @@
-classdef keyboardHandler < handle
+classdef CDG_keyboardHandler < handle
     
     properties
        dev
@@ -15,16 +15,7 @@ classdef keyboardHandler < handle
     methods
         
         %---- Constructor -----%
-        function obj = keyboardHandler(keyboardName)
-            if strcmp(keyboardName,'Mac')
-               keyboardName = 'Apple Internal Keyboard / Trackpad';
-            end
-            if strcmp(keyboardName,'Wireless')
-                keyboardName = 'USB Receiver';
-            end
-            if strcmp(keyboardName,'USB')
-                keyboardName = 'USB Keyboard';
-            end
+        function obj = CDG_keyboardHandler()
             
             obj.dev=PsychHID('Devices');
             obj.devInd = find(strcmpi('Keyboard', {obj.dev.usageName}) );

@@ -1,4 +1,4 @@
-classdef parser
+classdef CDG_parser
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,7 +6,7 @@ classdef parser
     end
     
     methods
-        function obj = parser()
+        function obj = CDG_parser()
         end
         
         function str = resToStr(obj, res)

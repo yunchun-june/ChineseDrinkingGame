@@ -1,4 +1,4 @@
-classdef dataHandler <handle
+classdef CDG_dataHandler <handle
 
 %     columns         index
 %     trials          1
@@ -45,7 +45,7 @@ classdef dataHandler <handle
     methods
         
         %-----Constructor-----%
-        function obj = dataHandler(ID1,ID2,rule,trials,gain)
+        function obj = CDG_dataHandler(ID1,ID2,rule,trials,gain)
             if strcmp(rule,'player1')
                 obj.player1ID = ID1;
                 obj.player2ID = ID2;

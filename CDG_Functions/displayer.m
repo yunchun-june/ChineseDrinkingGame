@@ -221,10 +221,8 @@ classdef displayer < handle
             if(data.oppChoice == 0) obj.write('X',5,5,'red',50); end
 
             %your Score
-            obj.write('Your Score:',1,10,'white',30);
-            obj.write(num2str(data.yourScore),2,10,'white',30);
-            obj.write('Opp Score:',4,10,'white',30);
-            obj.write(num2str(data.oppScore),5,10,'white',30);
+            obj.write(['You win ' num2str(data.yourScore) ' times'],1,10,'white',30);
+            obj.write(['Opp win ' num2str(data.oppScore) ' times'],4,10,'white',30);
 
             if(strcmp(data.winner,'WIN')) obj.write('WIN',3,10,'red',30); end
             if(strcmp(data.winner,'LOSE')) obj.write('LOSE',3,10,'green',30); end
