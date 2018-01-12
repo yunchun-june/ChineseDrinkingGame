@@ -1,3 +1,4 @@
+
 clear all;
 close all;
 clc;
@@ -7,12 +8,12 @@ Screen('Preference', 'SkipSyncTests', 1);
 try
     %===== Parameters =====%
 
-    totalTrials         = 20;
+    totalTrials         = 3;
     practiceTrials      = 15;
     
     choiceTime          = 5;
     guessSumTime        = 5;
-    showResultTime      = 10;
+    showResultTime      = 5;
     fixationTime        = 1;
     scorePerWin         = 10;
     
@@ -21,17 +22,21 @@ try
     FALSE               = 0;
     
     %===== IP Config for developing ===%
-    myID = 'test';
-    oppID = 'test';
+    
+    
     myIP = 'localhost';
     oppIP = 'localhost';
 
     rule = input('Rule(player1/player2): ','s');
     assert( strcmp(rule,'player1')|strcmp(rule,'player2'));
     if rule == 'player1'
+        myID = 'player1ID';
+        oppID = 'player2ID';
         myPort = 5656;
         oppPort = 7878;
     else
+        myID = 'player2ID';
+        oppID = 'player1ID';
         myPort = 7878;
         oppPort = 5656;
     end
@@ -235,7 +240,31 @@ try
         displayer.blackScreen();
     end
     
+    %==== random number ====%
+    displayer.writeMessage('End of Experiment','');
+    WaitSecs(4);
+    displayer.blackScreen();
+    WaitSecs(1);
     
+    spacePressed = FALSE;
+    keyboard.flushKbEvent();
+    random = 0;
+    while(~spacePressed)
+        random = randi(99);
+        displayer.writeMessage('Press space to get key',num2str(random));
+        WaitSecs(0.1);
+        spacePressed = keyboard.detectSpacePress();
+    end
+    
+    displayer.writeMessage('Press space to get key',num2str(random));
+    WaitSecs(1);
+    displayer.blackScreen();
+    WaitSecs(1);    
+    fianlScore = data.setKeyGetScore(random);
+    displayer.writeMessage(['Your Score: ',num2str(fianlScore)],['Your Total Payoff: ',num2str(fianlScore*scorePerWin), '$']);
+    WaitSecs(5);
+    
+    %==== Close Screen ====%
     
     displayer.closeScreen();
     ListenChar();

@@ -184,53 +184,41 @@ classdef displayer < handle
             %10 Your Score:   
             %--------------------------------------
             
+            invalid_respond = 1;
+            if(data.yourChoice && data.oppChoice)
+                invalid_respond = 0;
+            end
             
             %1 Your Choice
             obj.write('Your',1,2,'white',30);
             obj.write('Choice',1,3,'white',30);
-            obj.write('1',1,4,'white',30);
-            obj.write('2',1,5,'white',30);
-            obj.write('3',1,6,'white',30);
-            if(data.yourChoice ~= 0) obj.write(num2str(data.yourChoice),1,data.yourChoice+3,'red',30); end          
+            
+            if(data.yourChoice ~= 0)obj.write(num2str(data.yourChoice),1,5,'white',50);end      
+            if(data.yourChoice == 0)obj.write('X',1,5,'red',50);end 
             
             %1 Guess Sum
             obj.write('Guess',2,2,'white',30);
             obj.write('Sum',2,3,'white',30);
-            obj.write('2',2,5,'white',30);
-            obj.write('3',2,6,'white',30);
-            obj.write('4',2,7,'white',30);
-            obj.write('5',2,8,'white',30);
-            obj.write('6',2,9,'white',30);
-            if(data.yourGuess ~= 0) obj.write(num2str(data.yourGuess),2,data.yourGuess+3,'red',30); end
+            if(data.yourGuess ~= 0)obj.write(num2str(data.yourGuess),2,5,'white',50); end
+            if(data.yourGuess == 0)obj.write('X',2,5,'red',50);end
             
             %Real Sum, Opp guess, Opp choice
             obj.write('Real',3,2,'white',30);
             obj.write('Sum',3,3,'white',30);
-            obj.write('2',3,5,'white',30);
-            obj.write('3',3,6,'white',30);
-            obj.write('4',3,7,'white',30);
-            obj.write('5',3,8,'white',30);
-            obj.write('6',3,9,'white',30);
+            if(~invalid_respond) obj.write(num2str(data.realSum),3,5,'white',50); end
+            if(invalid_respond) obj.write('X',3,5,'red',50); end
             
             %Opp guess sum
             obj.write('Opp',4,2,'white',30);
             obj.write('Guess',4,3,'white',30);
-            obj.write('2',4,5,'white',30);
-            obj.write('3',4,6,'white',30);
-            obj.write('4',4,7,'white',30);
-            obj.write('5',4,8,'white',30);
-            obj.write('6',4,9,'white',30);
-            
+            if(data.oppGuess ~= 0) obj.write(num2str(data.oppGuess),4,5,'white',50); end
+            if(data.oppGuess == 0) obj.write('X',4,5,'red',50); end
+
             %Opp choice
             obj.write('Opp',5,2,'white',30);
             obj.write('Choice',5,3,'white',30);
-            obj.write('1',5,4,'white',30);
-            obj.write('2',5,5,'white',30);
-            obj.write('3',5,6,'white',30);
-            
-            if(data.realSum ~= 0) obj.write(num2str(data.realSum),3,data.realSum+3,'red',30); end
-            if(data.oppGuess ~= 0) obj.write(num2str(data.oppGuess),4,data.oppGuess+3,'red',30); end
-            if(data.oppChoice ~= 0) obj.write(num2str(data.oppChoice),5,data.oppChoice+3,'red',30); end
+            if(data.oppChoice ~= 0) obj.write(num2str(data.oppChoice),5,5,'white',50); end
+            if(data.oppChoice == 0) obj.write('X',5,5,'red',50); end
 
             %your Score
             obj.write('Your Score:',1,10,'white',30);

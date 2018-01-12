@@ -8,7 +8,8 @@ classdef keyboardHandler < handle
     properties (Constant)
         quitkey     = 'ESCAPE';
         confirm     = 'space';
-        numberKey   = {'1!';'2@';'3#';'4$';'5%';'6^'};
+        %numberKey   = {'1!';'2@';'3#';'4$';'5%';'6^'};
+        numberKey   = {'a';'s';'d';'f';'g';'h'};
     end
     
     methods
@@ -74,6 +75,20 @@ classdef keyboardHandler < handle
                     fprintf('space is pressed.\n');
                     break;
                 end
+            end
+        end
+        
+        function flushKbEvent(obj)
+            KbEventFlush();
+        end
+        
+        function result = detectSpacePress(obj)
+            [keyIsDown, firstKeyPressTimes, firstKeyReleaseTimes] = KbQueueCheck(obj.devInd);
+            if firstKeyPressTimes(KbName('space'))
+                fprintf('space is pressed.\n');
+                result = 1;
+            else
+                result  =0;
             end
         end
         

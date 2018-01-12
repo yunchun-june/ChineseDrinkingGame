@@ -23,6 +23,8 @@ classdef dataHandler <handle
         totalTrial
         result
         gain
+        randomKey
+        finalScore
         
         %columns        index
         trials          =1
@@ -99,42 +101,55 @@ classdef dataHandler <handle
                 obj.result{trial,13} = myRes.events;
             end
             
-            %real sum
-            if(obj.result{trial,2} ~= 0 && obj.result{trial,4} ~= 0)
-                obj.result{trial,6} = obj.result{trial,2} + obj.result{trial,4};
+            
+            % get real sum and winner
+            
+%             trials          =1
+%             p1choice        =2
+%             p1guess         =3
+%             p2choice        =4
+%             p2guess         =5
+%             realSum         =6
+%             p1IsRight       =7
+%             p2IsRight       =8
+%             winner          =9
+%             p1score         =10
+%             p2score         =11
+%             p1events        =12
+%             p2events        =13
+            
+            if(obj.result{trial,obj.p1choice} == 0)
+                obj.result{trial,obj.p1IsRight} = 0;
+                obj.result{trial,obj.p2IsRight} = 0;
+                obj.result{trial,obj.realSum}   = 0;
+                obj.result{trial,obj.winner}    = 2;
+            elseif(obj.result{trial,obj.p2choice} == 0)
+                obj.result{trial,obj.p1IsRight} = 0;
+                obj.result{trial,obj.p2IsRight} = 0;
+                obj.result{trial,obj.realSum}   = 0;
+                obj.result{trial,obj.winner}    = 2;
             else
-                obj.result{trial,6} = 0;
+                obj.result{trial,obj.realSum} = obj.result{trial,obj.p1choice} + obj.result{trial,obj.p2choice};
+                
+                if(obj.result{trial,obj.p1guess} == obj.result{trial,obj.realSum})
+                    obj.result{trial,obj.p1IsRight}    = 1;
+                else obj.result{trial,obj.p1IsRight}   = 0; end
+                
+                if(obj.result{trial,obj.p2guess} == obj.result{trial,obj.realSum})
+                    obj.result{trial,obj.p2IsRight}    = 1;
+                else obj.result{trial,obj.p2IsRight}   = 0; end
+    
+                if xor(obj.result{trial,obj.p1IsRight},obj.result{trial,obj.p2IsRight})
+                    if(obj.result{trial,obj.p1IsRight} == 1)
+                        obj.result{trial,obj.winner} = 1;
+                    else
+                        obj.result{trial,obj.winner} = 2;
+                    end
+                else
+                    obj.result{trial,obj.winner} = 0;
+                end
             end
-            
-            WRONG   = 1;
-            RIGHT   = 2;
-            NONSENSE = 3;
-            
-            %p1 is right
-            if(~obj.resMakeSense(obj.result{trial,obj.p1choice}, obj.result{trial,obj.p1guess}) || obj.result{trial,obj.p1guess} == 0)
-                obj.result{trial,obj.p1IsRight} = NONSENSE;
-            elseif(obj.result{trial,obj.realSum} == obj.result{trial,obj.p1guess})
-                obj.result{trial,obj.p1IsRight} = RIGHT;
-            else
-                obj.result{trial,obj.p1IsRight} = WRONG;
-            end
-            
-            %p2 is right
-            if(~obj.resMakeSense(obj.result{trial,obj.p2choice}, obj.result{trial,obj.p2guess}) || obj.result{trial,obj.p2guess} == 0)
-                obj.result{trial,obj.p2IsRight} = NONSENSE;
-            elseif(obj.result{trial,obj.realSum} == obj.result{trial,obj.p2guess})
-                obj.result{trial,obj.p2IsRight} = RIGHT;
-            else
-                obj.result{trial,obj.p2IsRight} = WRONG;
-            end
-            
-            % set winner
-                                %x  %o  %? player2
-            GET_WINNER    = [   0   2   1; %x player1
-                                1   0   1; %o
-                                2   2   0];%?
-            
-            obj.result{trial,9} = GET_WINNER(obj.result{trial,7},obj.result{trial,8});
+
             
             % update score
             if(trial == 1)
@@ -146,12 +161,12 @@ classdef dataHandler <handle
             end
             
             
-            if( obj.result{trial,9} == 1) % p1 win
-                obj.result{trial,10} = obj.result{trial,10} + obj.gain;
+            if( obj.result{trial,obj.winner} == 1) % p1 win
+                obj.result{trial,10} = obj.result{trial,10} + 1;
             end
             
-            if( obj.result{trial,9} == 2) % p2 win
-                obj.result{trial,11} = obj.result{trial,11} + obj.gain;
+            if( obj.result{trial,obj.winner} == 2) % p2 win
+                obj.result{trial,11} = obj.result{trial,11} + 1;
             end
             
         end
@@ -185,6 +200,22 @@ classdef dataHandler <handle
                 if(obj.result{trial,9} == 1) data.winner = 'LOSE'; end
                 if(obj.result{trial,9} == 0) data.winner = 'DRAW'; end
             end
+        end
+        
+        function finalScore = setKeyGetScore(obj,key)
+            obj.randomKey = mod(key,3)+1;
+            temp = 0;
+            for i = obj.randomKey:3:obj.totalTrial
+                if(strcmp(obj.rule,'player1'))
+                    temp = temp + obj.result{i,obj.p1IsRight};
+                end
+                if(strcmp(obj.rule,'player2'))
+                    temp = temp + obj.result{i,obj.p2IsRight};
+                end
+                
+            end
+            
+            finalScore = temp;
         end
         
         function logStatus(obj,trial)
