@@ -22,8 +22,6 @@ try
     FALSE               = 0;
     
     %===== IP Config for developing ===%
-    
-    
     myIP = 'localhost';
     oppIP = 'localhost';
 
@@ -66,7 +64,7 @@ try
     screenID            = 0;
     
     %===== Initialize Componets =====%
-    keyboard    = CDG_keyboardHandler();
+    keyboard    = keyboardHandler();
     displayer   = displayer(max(Screen('Screens')),displayerOn);
     parser      = CDG_parser();
     
@@ -114,21 +112,20 @@ try
        
         %========== Make Choice ===============%
     
-        if strcmp(rule,'player2')
-            myRes.choice = randi(3);
-            myRes.guess = myRes.choice + randi(3);
-        end
+        %if strcmp(rule,'player2')
+        %    myRes.choice = randi(3);
+        %    myRes.guess = myRes.choice + randi(3);
+        %end
         
         startTime = GetSecs();
         decisionMade = FALSE;
-        if strcmp(rule,'player2') decisionMade = TRUE; end
         fprintf('Make your choice.\n');
         for elapse = 1:choiceTime
             remaining = choiceTime-elapse+1;
             endOfThisSecond = startTime+elapse;
             fprintf('remaining time: %d\n',remaining);
 
-            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
+            displayer.CDG_decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
             
             while(GetSecs()<endOfThisSecond)
                 if ~decisionMade
@@ -140,7 +137,7 @@ try
                        if(strcmp(keyName,'confirm') && myRes.choice ~= 0)
                             decisionMade = TRUE;
                             fprintf('decision confirmed : %d\n',myRes.choice);
-                            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
+                            displayer.CDG_decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
                        end
                        
                        if strcmp(keyName,'quitkey')
@@ -155,7 +152,7 @@ try
                           if keyName >= 1 && keyName <=3
                             myRes.choice = keyName;
                             fprintf('choose %d\n',keyName);
-                            displayer.decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
+                            displayer.CDG_decideScreen('choose',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
                        end
@@ -172,12 +169,11 @@ try
         %========== Guess Sum ===============%
         startTime = GetSecs();
         decisionMade = FALSE;
-        if strcmp(rule,'player2') decisionMade = TRUE; end
         fprintf('Guess total Sum.\n');
         for elapse = 1:guessSumTime
             endOfThisSecond = startTime+elapse;
             remaining = guessSumTime-elapse+1;
-            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
+            displayer.CDG_decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
             
             fprintf('remaining time: %d\n',remaining);
             while(GetSecs()<endOfThisSecond)
@@ -190,7 +186,7 @@ try
                        if(strcmp(keyName,'confirm') && myRes.guess ~= 0)
                             decisionMade = TRUE;
                             fprintf('decision confirmed : %d\n',myRes.guess);
-                            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
+                            displayer.CDG_decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
                        end
                        
                        if strcmp(keyName,'quitkey')
@@ -205,7 +201,7 @@ try
                           if keyName >= 2 && keyName <=6
                             myRes.guess = keyName;
                             fprintf('choose %d\n',keyName);
-                            displayer.decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
+                            displayer.CDG_decideScreen('guessSum',myRes.choice,myRes.guess,remaining,decisionMade);
                           end 
                        catch
                        end
@@ -217,7 +213,7 @@ try
                 end
             end
         end
-        displayer.decideScreen('guessSum',myRes.choice,myRes.guess,0,1);
+        displayer.CDG_decideScreen('guessSum',myRes.choice,myRes.guess,0,1);
         if(~decisionMade) myRes.guess = 0; end
   
         %========== Exchange and Save Data ===============%
@@ -230,7 +226,7 @@ try
         resultData = data.getResult(trial);
         data.logStatus(trial);
         
-        displayer.showResult(resultData);
+        displayer.CDG_showResult(resultData);
         WaitSecs(showResultTime);
         displayer.blackScreen();
     end

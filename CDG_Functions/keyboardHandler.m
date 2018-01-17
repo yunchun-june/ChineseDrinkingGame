@@ -1,4 +1,4 @@
-classdef CDG_keyboardHandler < handle
+classdef keyboardHandler < handle
     
     properties
        dev
@@ -15,7 +15,7 @@ classdef CDG_keyboardHandler < handle
     methods
         
         %---- Constructor -----%
-        function obj = CDG_keyboardHandler()
+        function obj = keyboardHandler()
             
             obj.dev=PsychHID('Devices');
             obj.devInd = find(strcmpi('Keyboard', {obj.dev.usageName}) );

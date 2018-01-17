@@ -57,7 +57,7 @@ classdef displayer < handle
             Screen('CloseAll');
         end
         
-        %===== Display =====%
+        %===== Common Methods =====%
         
         function writeMessage(obj,line1,line2)
             if ~obj.displayerOn return; end
@@ -94,8 +94,22 @@ classdef displayer < handle
             Screen('Flip',obj.wPtr);
             WaitSecs(time);
         end
+          
+        function write(obj,text,x,y,c,size)
+            if strcmp(c,'white') color = obj.WHITE; end
+            if strcmp(c,'red') color = obj.RED; end
+            if strcmp(c,'green') color = obj.GREEN; end
+            if strcmp(c,'yellow') color = obj.YELLOW; end
+            if strcmp(c,'grey') color = obj.GREY; end
 
-        function decideScreen(obj,state,choice,guess,timer,confirmed)
+            Screen('TextSize', obj.wPtr,size);
+            Screen('DrawText',obj.wPtr,char(text), ceil(obj.xGrid(x)*obj.width/100), ceil(obj.yGrid(y)*obj.height/100), color);
+            
+        end
+        
+        %===== CDG =====%
+        
+        function CDG_decideScreen(obj,state,choice,guess,timer,confirmed)
             if ~obj.displayerOn return; end
             
             %--------------------------------------
@@ -168,7 +182,7 @@ classdef displayer < handle
         end
         
         
-        function showResult(obj,data)
+        function CDG_showResult(obj,data)
             if ~obj.displayerOn return; end
             
             %--------------------------------------
@@ -239,18 +253,7 @@ classdef displayer < handle
             
             Screen('Flip',obj.wPtr);
         end
-        
-        
-        function write(obj,text,x,y,c,size)
-            if strcmp(c,'white') color = obj.WHITE; end
-            if strcmp(c,'red') color = obj.RED; end
-            if strcmp(c,'green') color = obj.GREEN; end
-            if strcmp(c,'yellow') color = obj.YELLOW; end
 
-            Screen('TextSize', obj.wPtr,size);
-            Screen('DrawText',obj.wPtr,char(text), ceil(obj.xGrid(x)*obj.width/100), ceil(obj.yGrid(y)*obj.height/100), color);
-            
-        end
         
         function drawTimer(obj,t,xPosi,yPosi)
             w = 5;
